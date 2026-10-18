@@ -1,0 +1,55 @@
+{% extends 'lab/base.html' %}
+{% load static %}
+{% block title %}{{ topic.name }} — Dashboard{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+    <div class="breadcrumb">
+        <a href="{% url 'lab:dashboard' %}">Dashboard</a>
+        <span>/</span>
+        {{ topic.icon }} {{ topic.name }}
+    </div>
+
+    <div class="dash-header">
+        <div>
+            <h1>{{ topic.icon }} {{ topic.name }}</h1>
+            <p>{{ topic.description|default:"Manage subtopics for this topic." }}</p>
+        </div>
+        <div class="dash-actions">
+            <a href="{% url 'lab:dashboard_subtopic_add' topic.slug %}" class="btn btn-primary">+ New SubTopic</a>
+            <a href="{{ topic.get_absolute_url }}" class="btn" target="_blank">View Public Page</a>
+            <a href="{% url 'lab:dashboard_topic_edit' topic.pk %}" class="btn">Edit Topic</a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>📂 SubTopics ({{ subtopics.count }})</h2>
+        </div>
+        <div>
+            {% for st in subtopics %}
+            <div class="section-row">
+                <div class="section-row-main">
+                    <h4>
+                        {{ st.name }}
+                        <span class="lang-tag">{{ st.section_count }} sec</span>
+                    </h4>
+                    <p>{{ st.description|default:"No description"|truncatechars:90 }}</p>
+                </div>
+                <div class="topic-row-actions">
+                    <a href="{% url 'lab:dashboard_subtopic_sections' st.pk %}" class="icon-btn">Manage</a>
+                    <a href="{{ st.get_absolute_url }}" class="icon-btn" target="_blank">View</a>
+                    <a href="{% url 'lab:dashboard_subtopic_edit' st.pk %}" class="icon-btn">Edit</a>
+                    <a href="{% url 'lab:dashboard_subtopic_delete' st.pk %}" class="icon-btn danger">Delete</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="dash-empty">
+                <h4>No subtopics yet</h4>
+                <p>Click "+ New SubTopic" above.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

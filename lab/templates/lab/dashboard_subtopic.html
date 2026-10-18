@@ -1,0 +1,55 @@
+{% extends 'lab/base.html' %}
+{% load static %}
+{% block title %}{{ subtopic.name }} — Sections{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+    <div class="breadcrumb">
+        <a href="{% url 'lab:dashboard' %}">Dashboard</a>
+        <span>/</span>
+        <a href="{% url 'lab:dashboard_topic_subtopics' topic.slug %}">{{ topic.name }}</a>
+        <span>/</span>
+        {{ subtopic.name }}
+    </div>
+
+    <div class="dash-header">
+        <div>
+            <h1>📄 {{ subtopic.name }}</h1>
+            <p>{{ subtopic.description|default:"Manage sections for this subtopic." }}</p>
+        </div>
+        <div class="dash-actions">
+            <a href="{% url 'lab:dashboard_section_add' subtopic.pk %}" class="btn btn-primary">+ New Section</a>
+            <a href="{{ subtopic.get_absolute_url }}" class="btn" target="_blank">View Public Page</a>
+            <a href="{% url 'lab:dashboard_subtopic_edit' subtopic.pk %}" class="btn">Edit SubTopic</a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>📝 Sections ({{ sections.count }})</h2>
+        </div>
+        <div>
+            {% for s in sections %}
+            <div class="section-row">
+                <div class="section-row-main">
+                    <h4>
+                        {{ s.title }}
+                        <span class="lang-tag">{{ s.language|default:"code" }}</span>
+                    </h4>
+                    <p>{{ s.description|default:"No description"|truncatechars:90 }}</p>
+                </div>
+                <div class="topic-row-actions">
+                    <a href="{% url 'lab:dashboard_section_edit' s.pk %}" class="icon-btn">Edit</a>
+                    <a href="{% url 'lab:dashboard_section_delete' s.pk %}" class="icon-btn danger">Delete</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="dash-empty">
+                <h4>No sections yet</h4>
+                <p>Click "+ New Section" above.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

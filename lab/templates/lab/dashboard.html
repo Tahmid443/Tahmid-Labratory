@@ -1,0 +1,93 @@
+{% extends 'lab/base.html' %}
+{% load static %}
+{% block title %}Dashboard — Tahmid Laboratory{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+    <div class="dash-header">
+        <div>
+            <h1>🎛️ Admin Dashboard</h1>
+            <p>Manage topics, subtopics, and code sections.</p>
+        </div>
+        <div class="dash-actions">
+            <a href="{% url 'lab:dashboard_topic_add' %}" class="btn btn-primary">+ New Topic</a>
+            <a href="/admin/" class="btn" target="_blank">⚙️ Django Admin</a>
+        </div>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-label">Topics</div>
+            <div class="stat-value">{{ stats.topics }}</div>
+            <div class="stat-desc">Categories</div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-label">Subtopics</div>
+            <div class="stat-value">{{ stats.subtopics }}</div>
+            <div class="stat-desc">Single pages</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label">Sections</div>
+            <div class="stat-value">{{ stats.sections }}</div>
+            <div class="stat-desc">Code snippets</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-label">Logged in as</div>
+            <div class="stat-value" style="font-size:1.3rem;">{{ user.username }}</div>
+            <div class="stat-desc">Staff access</div>
+        </div>
+    </div>
+
+    <div class="dash-grid">
+        <div class="panel">
+            <div class="panel-head">
+                <h2>📚 Topics</h2>
+                <a href="{% url 'lab:dashboard_topic_add' %}" class="icon-btn">+ Add</a>
+            </div>
+            <div>
+                {% for t in topics %}
+                <div class="topic-row">
+                    <div class="topic-row-icon">{{ t.icon }}</div>
+                    <div class="topic-row-main">
+                        <h4>{{ t.name }}</h4>
+                        <p>{{ t.description|default:"No description"|truncatechars:70 }}</p>
+                    </div>
+                    <div class="topic-row-badge">{{ t.subtopic_count }} sub · {{ t.section_count }} sec</div>
+                    <div class="topic-row-actions">
+                        <a href="{% url 'lab:dashboard_topic_subtopics' t.slug %}" class="icon-btn">Manage</a>
+                        <a href="{{ t.get_absolute_url }}" class="icon-btn" target="_blank">View</a>
+                        <a href="{% url 'lab:dashboard_topic_edit' t.pk %}" class="icon-btn">Edit</a>
+                        <a href="{% url 'lab:dashboard_topic_delete' t.pk %}" class="icon-btn danger">Delete</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="dash-empty">
+                    <h4>No topics yet</h4>
+                    <p>Click "+ New Topic" to start.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-head">
+                <h2>🕓 Recent Activity</h2>
+            </div>
+            <div class="panel-body">
+                {% for s in recent_sections %}
+                <div class="recent-item">
+                    <strong>{{ s.title }}</strong>
+                    <span>{{ s.subtopic.topic.icon }} {{ s.subtopic.topic.name }} → {{ s.subtopic.name }} · {{
+                        s.updated_at|date:"M d, H:i" }}</span>
+                </div>
+                {% empty %}
+                <div class="dash-empty">
+                    <h4>No activity yet</h4>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

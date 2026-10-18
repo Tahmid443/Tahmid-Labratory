@@ -1,0 +1,29 @@
+{% extends 'lab/base.html' %}
+{% block title %}Home — Tahmid Laboratory{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Welcome to <span>Tahmid Laboratory</span></h1>
+    <p>A personal knowledge lab for Python, NumPy, Pandas, DSA and more.</p>
+</section>
+
+<h2 class="section-heading">Browse Topics</h2>
+<div class="topics-grid">
+    {% for t in home_topics %}
+    <a href="{{ t.get_absolute_url }}" class="topic-card">
+        <div class="topic-icon">{{ t.icon }}</div>
+        <h3>{{ t.name }}</h3>
+        <p>{{ t.description|default:"Explore this topic" }}</p>
+        <span class="topic-meta">
+            {{ t.subtopic_count }} subtopic{{ t.subtopic_count|pluralize }} ·
+            {{ t.section_count }} section{{ t.section_count|pluralize }}
+        </span>
+    </a>
+    {% empty %}
+    <div class="empty-state">
+        <h3>No topics yet</h3>
+        <p>Log in to <a href="/admin/">the admin dashboard</a> to add your first topic.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

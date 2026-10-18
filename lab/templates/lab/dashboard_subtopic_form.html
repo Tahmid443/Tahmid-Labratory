@@ -1,0 +1,34 @@
+{% extends 'lab/base.html' %}
+{% block title %}{% if mode == 'add' %}New SubTopic{% else %}Edit SubTopic{% endif %}{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+    <div class="breadcrumb">
+        <a href="{% url 'lab:dashboard' %}">Dashboard</a>
+        <span>/</span>
+        <a href="{% url 'lab:dashboard_topic_subtopics' topic.slug %}">{{ topic.name }}</a>
+        <span>/</span>
+        {% if mode == 'add' %}New SubTopic{% else %}Edit {{ subtopic.name }}{% endif %}
+    </div>
+
+    <div class="form-card">
+        <h1>{% if mode == 'add' %}➕ New SubTopic{% else %}✏️ Edit SubTopic{% endif %}</h1>
+        <p style="color:#94a3b8;margin-bottom:20px;">in <strong>{{ topic.icon }} {{ topic.name }}</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save SubTopic</button>
+                <a href="{% url 'lab:dashboard_topic_subtopics' topic.slug %}" class="btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

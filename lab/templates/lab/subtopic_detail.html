@@ -1,0 +1,72 @@
+{% extends 'lab/base.html' %}
+{% block title %}{{ subtopic.name }} — {{ topic.name }} — Tahmid Laboratory{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'lab:home' %}">Home</a>
+    <span>/</span>
+    <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
+    <span>/</span>
+    {{ subtopic.name }}
+</div>
+
+<div class="topic-header">
+    <div>
+        <h1>📄 {{ subtopic.name }}</h1>
+        {% if subtopic.description %}<p class="topic-desc">{{ subtopic.description }}</p>{% endif %}
+    </div>
+    {% if user.is_authenticated %}
+    <a href="{% url 'lab:section_add' topic.slug subtopic.slug %}" class="btn btn-primary">+ Add Section</a>
+    {% endif %}
+</div>
+
+{% for section in sections %}
+<article class="section-card" id="section-{{ section.id }}">
+    <div class="section-head">
+        <h2>{{ section.title }}</h2>
+        {% if user.is_authenticated %}
+        <div class="section-actions">
+            <a href="{% url 'lab:section_edit' section.pk %}" class="btn btn-sm">Edit</a>
+            <a href="{% url 'lab:section_delete' section.pk %}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if section.description %}
+    <p class="section-desc">{{ section.description|linebreaks }}</p>
+    {% endif %}
+
+    {% if section.code %}
+    <div class="code-block">
+        <div class="code-label">
+            <span>{{ section.language|default:"code" }}</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code class="language-{{ section.language }}">{{ section.code }}</code></pre>
+    </div>
+    {% endif %}
+
+    {% if section.output %}
+    <div class="output-block">
+        <div class="output-label">Output</div>
+        <pre>{{ section.output }}</pre>
+    </div>
+    {% endif %}
+</article>
+{% empty %}
+<div class="empty-state">
+    <h3>No sections yet</h3>
+    <p>This subtopic doesn't have any sections. Add content from the admin dashboard.</p>
+</div>
+{% endfor %}
+
+<script>
+    function copyCode(btn) {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            btn.textContent = 'Copied!';
+            setTimeout(() => btn.textContent = 'Copy', 1500);
+        });
+    }
+</script>
+{% endblock %}

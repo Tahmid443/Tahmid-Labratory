@@ -1,0 +1,16 @@
+{% extends 'lab/base.html' %}
+{% block title %}Delete Section{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Delete this section?</h1>
+    <p><strong>{{ section.title }}</strong> will be permanently removed from <em>{{ subtopic.name }}</em>.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{{ subtopic.get_absolute_url }}" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

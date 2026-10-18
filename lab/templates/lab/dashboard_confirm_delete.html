@@ -1,0 +1,36 @@
+{% extends 'lab/base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+    <div class="form-card">
+        <h1>⚠️ Delete {{ kind|title }}?</h1>
+
+        {% if kind == 'topic' %}
+        <p>Delete the topic <strong>{{ topic.icon }} {{ topic.name }}</strong>?</p>
+        <p style="color:#f87171;margin-top:10px;"><strong>Warning:</strong> All its subtopics and sections will also be
+            deleted.</p>
+        {% elif kind == 'subtopic' %}
+        <p>Delete the subtopic <strong>{{ subtopic.name }}</strong> from <em>{{ topic.name }}</em>?</p>
+        <p style="color:#f87171;margin-top:10px;"><strong>Warning:</strong> All {{ subtopic.sections.count }} section(s)
+            inside it will also be deleted.</p>
+        {% else %}
+        <p>Delete the section <strong>"{{ section.title }}"</strong> from <em>{{ subtopic.name }}</em>?</p>
+        {% endif %}
+
+        <form method="post" style="margin-top:24px;">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                {% if kind == 'topic' %}
+                <a href="{% url 'lab:dashboard' %}" class="btn">Cancel</a>
+                {% elif kind == 'subtopic' %}
+                <a href="{% url 'lab:dashboard_topic_subtopics' topic.slug %}" class="btn">Cancel</a>
+                {% else %}
+                <a href="{% url 'lab:dashboard_subtopic_sections' subtopic.pk %}" class="btn">Cancel</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

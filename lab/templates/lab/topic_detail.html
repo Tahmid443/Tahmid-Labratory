@@ -1,0 +1,28 @@
+{% extends 'lab/base.html' %}
+{% block title %}{{ topic.name }} — Tahmid Laboratory{% endblock %}
+
+{% block content %}
+<div class="topic-header">
+    <div>
+        <h1>{{ topic.icon }} {{ topic.name }}</h1>
+        {% if topic.description %}<p class="topic-desc">{{ topic.description }}</p>{% endif %}
+    </div>
+</div>
+
+<h2 class="section-heading">📂 Subtopics</h2>
+<div class="topics-grid">
+    {% for st in subtopics %}
+    <a href="{{ st.get_absolute_url }}" class="topic-card">
+        <div class="topic-icon">📄</div>
+        <h3>{{ st.name }}</h3>
+        <p>{{ st.description|default:"Explore this subtopic" }}</p>
+        <span class="topic-meta">{{ st.section_count }} section{{ st.section_count|pluralize }}</span>
+    </a>
+    {% empty %}
+    <div class="empty-state">
+        <h3>No subtopics yet</h3>
+        <p>This topic has no subtopics. Add some from the admin dashboard.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

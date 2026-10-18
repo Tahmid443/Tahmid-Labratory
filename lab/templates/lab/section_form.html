@@ -1,0 +1,33 @@
+{% extends 'lab/base.html' %}
+{% block title %}Section — {{ subtopic.name }}{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{% url 'lab:home' %}">Home</a>
+    <span>/</span>
+    <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
+    <span>/</span>
+    <a href="{{ subtopic.get_absolute_url }}">{{ subtopic.name }}</a>
+    <span>/</span>
+    {% if form.instance.pk %}Edit Section{% else %}New Section{% endif %}
+</div>
+
+<div class="form-card">
+    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Section in {{ subtopic.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+            {% if field.errors %}<div class="form-error">{{ field.errors }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ subtopic.get_absolute_url }}" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
